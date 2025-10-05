@@ -58,26 +58,26 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define LED_RED_A_Pin GPIO_PIN_0
-#define LED_RED_A_GPIO_Port GPIOA
-#define LED_YELLOW_A_Pin GPIO_PIN_1
-#define LED_YELLOW_A_GPIO_Port GPIOA
-#define LED_GREEN_A_Pin GPIO_PIN_2
-#define LED_GREEN_A_GPIO_Port GPIOA
-#define LED_RED_B_Pin GPIO_PIN_3
-#define LED_RED_B_GPIO_Port GPIOA
-#define LED_YELLOW_B_Pin GPIO_PIN_4
-#define LED_YELLOW_B_GPIO_Port GPIOA
-#define LED_GREEN_B_Pin GPIO_PIN_5
-#define LED_GREEN_B_GPIO_Port GPIOA
 #define SEG_A_Pin GPIO_PIN_7
 #define SEG_A_GPIO_Port GPIOA
-#define BUTTON_A_Pin GPIO_PIN_0
-#define BUTTON_A_GPIO_Port GPIOB
-#define BUTTON_B_Pin GPIO_PIN_1
-#define BUTTON_B_GPIO_Port GPIOB
-#define BUTTON_C_Pin GPIO_PIN_2
-#define BUTTON_C_GPIO_Port GPIOB
+#define Button_Select_Pin GPIO_PIN_0
+#define Button_Select_GPIO_Port GPIOB
+#define Button_Modify_Pin GPIO_PIN_1
+#define Button_Modify_GPIO_Port GPIOB
+#define Button_Set_Pin GPIO_PIN_2
+#define Button_Set_GPIO_Port GPIOB
+#define RED_A_Pin GPIO_PIN_10
+#define RED_A_GPIO_Port GPIOB
+#define YELLOW_A_Pin GPIO_PIN_11
+#define YELLOW_A_GPIO_Port GPIOB
+#define GREEN_A_Pin GPIO_PIN_12
+#define GREEN_A_GPIO_Port GPIOB
+#define RED_B_Pin GPIO_PIN_13
+#define RED_B_GPIO_Port GPIOB
+#define YELLOW_B_Pin GPIO_PIN_14
+#define YELLOW_B_GPIO_Port GPIOB
+#define GREEN_B_Pin GPIO_PIN_15
+#define GREEN_B_GPIO_Port GPIOB
 #define SEG_B_Pin GPIO_PIN_8
 #define SEG_B_GPIO_Port GPIOA
 #define SEG_C_Pin GPIO_PIN_9
@@ -90,8 +90,14 @@ void Error_Handler(void);
 #define SEG_F_GPIO_Port GPIOA
 #define SEG_G_Pin GPIO_PIN_13
 #define SEG_G_GPIO_Port GPIOA
-#define SEG_EN_Pin GPIO_PIN_4
-#define SEG_EN_GPIO_Port GPIOB
+#define SEG_EN0_Pin GPIO_PIN_4
+#define SEG_EN0_GPIO_Port GPIOB
+#define SEG_EN1_Pin GPIO_PIN_5
+#define SEG_EN1_GPIO_Port GPIOB
+#define SEG_EN2_Pin GPIO_PIN_6
+#define SEG_EN2_GPIO_Port GPIOB
+#define SEG_EN3_Pin GPIO_PIN_7
+#define SEG_EN3_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
