@@ -221,7 +221,7 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pins : BUTTON_A_Pin BUTTON_B_Pin BUTTON_C_Pin */
   GPIO_InitStruct.Pin = BUTTON_A_Pin|BUTTON_B_Pin|BUTTON_C_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pin : SEG_EN_Pin */
