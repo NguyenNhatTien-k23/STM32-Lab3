@@ -19,11 +19,10 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "Software_Timer.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "Software_Timer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,7 +44,6 @@ TIM_HandleTypeDef htim2;
 
 /* USER CODE BEGIN PV */
 int led_id = -1;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -95,8 +93,8 @@ int main(void)
 
   SoftwareTimer_Init();
 
-  led_id = SoftwareTimer_AddNewTimer(50);
-  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, RESET);
+  led_id = SoftwareTimer_AddNewTimer(100);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -107,8 +105,8 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	if(SoftwareTimer_GetFlag(led_id) == FLAG_ON){
-		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
 		SoftwareTimer_ResetFlag(led_id);
+		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
 	}
   }
   /* USER CODE END 3 */
@@ -245,8 +243,11 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+//For some reason Proteus called this every 9ms
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim){
-	SoftwareTimer_Step();
+	if(htim->Instance == TIM2){
+		SoftwareTimer_Step();
+	}
 }
 /* USER CODE END 4 */
 

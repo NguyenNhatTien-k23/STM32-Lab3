@@ -1,3 +1,4 @@
+"./Core/Src/Button.o"
 "./Core/Src/Linked_List.o"
 "./Core/Src/Software_Timer.o"
 "./Core/Src/main.o"
