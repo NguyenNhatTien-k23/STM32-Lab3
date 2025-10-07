@@ -8,11 +8,12 @@
 #include "Software_Timer.h"
 
 
-
 TimerNode_t* head;
 TimerNode_t* timers[16] = {};
 int timer_count = 0;
 
+uint32_t last_time = 0;
+uint32_t current_time = 0;
 /**
  * Initialize Dummy Node
  * Must be called before enter infinite loop
@@ -58,10 +59,17 @@ void SoftwareTimer_ResetFlag(int id){
 	LinkedList_Add(head, timers[id]);
 }
 
+/**
+ * The problem with this approach is that is:
+ *  If interrupt duration must be < our timer or else the timer will always be late
+ * 	or interrupt duration is faster than 1ms then last_time is always roughly equal because HAL_GetTick() only return value in ms.
+ */
 void SoftwareTimer_Step(){
 	TimerNode_t* node = head->next;
 	if(node->timer.counter > 0){
-		node->timer.counter--;
+		last_time = current_time;
+		current_time = HAL_GetTick();
+		node->timer.counter -= current_time - last_time;
 	}
 
 	if(node->timer.counter <= 0){

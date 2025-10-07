@@ -8,4 +8,5 @@
 
 #include "Button.h"
 
-
+//Private member variable
+ButtonState_t state = RELEASE;

@@ -93,7 +93,7 @@ int main(void)
 
   SoftwareTimer_Init();
 
-  led_id = SoftwareTimer_AddNewTimer(100);
+  led_id = SoftwareTimer_AddNewTimer(1000);
 
   /* USER CODE END 2 */
 
@@ -108,6 +108,7 @@ int main(void)
 		SoftwareTimer_ResetFlag(led_id);
 		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
 	}
+
   }
   /* USER CODE END 3 */
 }
@@ -243,10 +244,10 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-//For some reason Proteus called this every 9ms
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim){
 	if(htim->Instance == TIM2){
 		SoftwareTimer_Step();
+		Button_ReadInput();
 	}
 }
 /* USER CODE END 4 */
