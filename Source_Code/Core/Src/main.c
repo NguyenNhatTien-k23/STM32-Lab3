@@ -109,6 +109,7 @@ int main(void)
 		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
 	}
 
+	Button_StateMachine();
   }
   /* USER CODE END 3 */
 }

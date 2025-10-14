@@ -19,7 +19,7 @@ typedef enum ButtonState{
 	HOLD
 } ButtonState_t;
 
-void Button_Init();
+void Button_StateMachine();
 void Button_ReadInput();
 
 ButtonState_t Button_GetButtonState(uint8_t index);
