@@ -1,4 +1,6 @@
 "./Core/Src/Button.o"
+"./Core/Src/Finite_State_Machine.o"
+"./Core/Src/LED_Display.o"
 "./Core/Src/Linked_List.o"
 "./Core/Src/Software_Timer.o"
 "./Core/Src/main.o"

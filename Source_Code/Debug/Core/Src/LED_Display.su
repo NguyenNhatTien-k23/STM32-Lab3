@@ -1,0 +1,3 @@
+LED_Display.c:20:6:LEDdisplay_DisplayNumber	16	static
+LED_Display.c:28:6:LEDdisplay_ClearEn	16	static
+LED_Display.c:33:6:LEDdisplay_ClearBuffer	16	static

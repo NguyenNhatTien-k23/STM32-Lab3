@@ -1,0 +1,9 @@
+Finite_State_Machine.c:49:6:FiniteStateMachine_Run	8	static
+Finite_State_Machine.c:87:6:FiniteStateMachine_Init	8	static
+Finite_State_Machine.c:101:6:FiniteStateMachine_Normal	8	static
+Finite_State_Machine.c:155:6:FiniteStateMachine_ModifyRed	4	static
+Finite_State_Machine.c:159:6:FiniteStateMachine_ModifyYellow	4	static
+Finite_State_Machine.c:163:6:FiniteStateMachine_ModifyGreen	4	static
+Finite_State_Machine.c:168:6:UpdateLEDBuffer	4	static
+Finite_State_Machine.c:175:6:DisplayTraficLight	16	static
+Finite_State_Machine.c:203:6:ClearTraficLight	16	static

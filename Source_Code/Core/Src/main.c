@@ -22,8 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "Software_Timer.h"
-#include "Button.h"
+#include "Finite_State_Machine.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,7 +43,7 @@
 TIM_HandleTypeDef htim2;
 
 /* USER CODE BEGIN PV */
-int led_id = -1;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -92,11 +91,6 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
 
-  SoftwareTimer_Init();
-  Button_TimerInit();
-
-  led_id = SoftwareTimer_AddNewTimer1000);
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -106,11 +100,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	if(SoftwareTimer_GetFlag(led_id) == FLAG_ON){
-		SoftwareTimer_ResetFlag(led_id);
-		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-	}
-
+	  FiniteStateMachine_Run();
   }
   /* USER CODE END 3 */
 }

@@ -13,8 +13,6 @@
 
 #include <stdint.h>
 
-
-
 typedef enum ButtonState{
 	RELEASE = 0,
 	PRESSED,

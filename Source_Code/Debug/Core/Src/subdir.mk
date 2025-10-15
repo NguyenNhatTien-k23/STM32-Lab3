@@ -6,6 +6,8 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../Core/Src/Button.c \
+../Core/Src/Finite_State_Machine.c \
+../Core/Src/LED_Display.c \
 ../Core/Src/Linked_List.c \
 ../Core/Src/Software_Timer.c \
 ../Core/Src/main.c \
@@ -17,6 +19,8 @@ C_SRCS += \
 
 OBJS += \
 ./Core/Src/Button.o \
+./Core/Src/Finite_State_Machine.o \
+./Core/Src/LED_Display.o \
 ./Core/Src/Linked_List.o \
 ./Core/Src/Software_Timer.o \
 ./Core/Src/main.o \
@@ -28,6 +32,8 @@ OBJS += \
 
 C_DEPS += \
 ./Core/Src/Button.d \
+./Core/Src/Finite_State_Machine.d \
+./Core/Src/LED_Display.d \
 ./Core/Src/Linked_List.d \
 ./Core/Src/Software_Timer.d \
 ./Core/Src/main.d \

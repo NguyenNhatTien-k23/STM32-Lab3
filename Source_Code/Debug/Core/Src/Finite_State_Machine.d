@@ -1,5 +1,6 @@
-Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
- ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
+Core/Src/Finite_State_Machine.o: ../Core/Src/Finite_State_Machine.c \
+ ../Core/Inc/Finite_State_Machine.h ../Core/Inc/Software_Timer.h \
+ ../Core/Inc/main.h ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Core/Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h \
@@ -23,9 +24,11 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
- ../Core/Inc/Finite_State_Machine.h ../Core/Inc/Software_Timer.h \
- ../Core/Inc/main.h ../Core/Inc/Linked_List.h ../Core/Inc/Button.h \
- ../Core/Inc/LED_Display.h
+ ../Core/Inc/Linked_List.h ../Core/Inc/Button.h ../Core/Inc/LED_Display.h
+
+../Core/Inc/Finite_State_Machine.h:
+
+../Core/Inc/Software_Timer.h:
 
 ../Core/Inc/main.h:
 
@@ -76,12 +79,6 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h:
 
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h:
-
-../Core/Inc/Finite_State_Machine.h:
-
-../Core/Inc/Software_Timer.h:
-
-../Core/Inc/main.h:
 
 ../Core/Inc/Linked_List.h:
 
