@@ -72,8 +72,8 @@ void SoftwareTimer_Step(){
 		node->timer.counter -= current_time - last_time;
 	}
 
-	if(node->timer.counter <= 0){
-		int id = node->timer.id;
+	while(head->next->timer.counter <= 0){
+		int id = head->next->timer.id;
 		timers[id]->timer.flag = FLAG_ON;
 		LinkedList_PopHead(head);
 	}

@@ -13,13 +13,16 @@
 
 #include <stdint.h>
 
+
+
 typedef enum ButtonState{
 	RELEASE = 0,
 	PRESSED,
-	HOLD
+	HOLD,
+	ERROR_STATE
 } ButtonState_t;
 
-void Button_StateMachine();
+void Button_TimerInit();
 void Button_ReadInput();
 
 ButtonState_t Button_GetButtonState(uint8_t index);
