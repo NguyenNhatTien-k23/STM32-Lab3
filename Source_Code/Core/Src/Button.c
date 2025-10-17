@@ -12,11 +12,17 @@
 #define BUTTON_PIN_STATE_RELEASE GPIO_PIN_SET
 
 #define NUMBER_OF_BUTTON 3
-#define KEY_PRESS_TIME (int)1000
+#define KEY_PRESS_TIME (int)500
 
 //Private member variable
 ButtonState_t interface_button_state[NUMBER_OF_BUTTON];
 GPIO_PinState button_state[NUMBER_OF_BUTTON];
+
+int pressed_flag[NUMBER_OF_BUTTON] = {0, 0, 0};
+int hold_flag[NUMBER_OF_BUTTON] = {0, 0, 0};
+
+int IsPressed(int index);
+int IsHeld(int index);
 
 /**
  * This will help update button_state
@@ -42,16 +48,20 @@ void Button_ReadInput(){
 				//Switch to pressed state
 				if(button_state[button] == BUTTON_PIN_STATE_PRESSED){
 					//Start counting for hold state;
-					SoftwareTimer_ResetFlag(button_counter_id[button]);
-					interface_button_state[button] = PRESSED;
+					if(SoftwareTimer_GetFlag(button_counter_id[button]) == FLAG_ON){
+						SoftwareTimer_ResetFlag(button_counter_id[button]);
+					}
+					pressed_flag[button] = 1;
 				}
 			}
 			//State is the same
 			else{
 				//Timer is up and the button_state is pressed
-				if(current_state[button] == BUTTON_PIN_STATE_PRESSED &&	SoftwareTimer_GetFlag(button_counter_id[button]) == FLAG_ON){
-					SoftwareTimer_ResetFlag(button_counter_id[button]);
-					interface_button_state[button] = HOLD;
+				if(SoftwareTimer_GetFlag(button_counter_id[button]) == FLAG_ON){
+					if(button_state[button] == BUTTON_PIN_STATE_PRESSED){
+						SoftwareTimer_ResetFlag(button_counter_id[button]);
+						hold_flag[button] = 1;
+					}
 				}
 			}
 		}
@@ -60,17 +70,44 @@ void Button_ReadInput(){
 
 void Button_TimerInit(){
 	for(int button = 0; button < NUMBER_OF_BUTTON; ++button){
-		button_counter_id[button] = SoftwareTimer_AddNewTimer(KEY_PRESS_TIME);
+		button_counter_id[button] = SoftwareTimer_AddNewTimer(1);
+		SoftwareTimer_SetNewTimer(button_counter_id[button], KEY_PRESS_TIME);
+	}
+}
+
+void Button_Process(){
+	for(int i = 0; i < NUMBER_OF_BUTTON; ++i){
+		switch(interface_button_state[i]){
+		case RELEASE:
+			if(IsPressed(i)){
+				interface_button_state[i] = PRESSED;
+			}
+			break;
+
+		case PRESSED:
+			if(!IsPressed(i)){
+				interface_button_state[i] = RELEASE;
+			}
+			else if(IsHeld(i)){
+				interface_button_state[i] = HOLD;
+			}
+			break;
+
+		case HOLD:
+			if(!IsPressed(i)){
+				interface_button_state[i] = RELEASE;
+			}
+			break;
+
+		default:
+			break;
+		}
 	}
 }
 
 ButtonState_t Button_GetButtonState(uint8_t index){
 	if(index < NUMBER_OF_BUTTON && index >= 0){
-		ButtonState_t state = interface_button_state[index];
-		if(state != RELEASE){
-			interface_button_state[index] = RELEASE;
-		}
-		return state;
+		return interface_button_state[index];
 	}
 	else{
 		return ERROR_STATE;
@@ -78,3 +115,19 @@ ButtonState_t Button_GetButtonState(uint8_t index){
 
 }
 
+int IsPressed(int index){
+	if(pressed_flag[index] == 1){
+		pressed_flag[index] = 0;
+		return 1;
+	}
+	return 0;
+}
+
+int IsHeld(int index){
+	if(hold_flag[index] == 1){
+		hold_flag[index] = 0;
+		return 1;
+	}
+	return 0;
+
+}

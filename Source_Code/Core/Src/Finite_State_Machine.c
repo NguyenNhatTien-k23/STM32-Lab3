@@ -142,15 +142,15 @@ void FiniteStateMachine_Run(){
 		if(en_pin >= NUMBER_OF_EN_PIN){
 			en_pin = 0;
 		}
-
 	}
+	Button_Process();
 }
 
 void FiniteStateMachine_Init(){
 	SoftwareTimer_Init();
 	Button_TimerInit();
 
-	blinking_timer_id = SoftwareTimer_AddNewTimer(500);
+	blinking_timer_id = SoftwareTimer_AddNewTimer(250);
 	led_display_timer_id = SoftwareTimer_AddNewTimer(125);
 	trafic_light_timer_id = SoftwareTimer_AddNewTimer(1000);
 	modify_restrict_timer_id = SoftwareTimer_AddNewTimer(250);
@@ -158,6 +158,13 @@ void FiniteStateMachine_Init(){
 	machine_state = FSM_NORMAL;
 	trafic_light_state = TLS_INIT;
 	en_pin = 0;
+
+	HAL_GPIO_WritePin(GPIOA, LED_Pin|SEG_A_Pin|SEG_B_Pin|SEG_C_Pin
+	                          |SEG_D_Pin|SEG_E_Pin|SEG_F_Pin|SEG_G_Pin, GPIO_PIN_RESET);
+
+	HAL_GPIO_WritePin(GPIOB, RED_A_Pin|YELLOW_A_Pin|GREEN_A_Pin|RED_B_Pin
+	                          |YELLOW_B_Pin|GREEN_B_Pin|SEG_EN0_Pin|SEG_EN1_Pin
+	                          |SEG_EN2_Pin|SEG_EN3_Pin, GPIO_PIN_RESET);
 }
 
 void FiniteStateMachine_Normal(){

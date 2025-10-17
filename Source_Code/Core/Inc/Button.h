@@ -22,8 +22,10 @@ typedef enum ButtonState{
 
 void Button_TimerInit();
 void Button_ReadInput();
+void Button_Process();
 
 ButtonState_t Button_GetButtonState(uint8_t index);
+
 
 
 #endif /* INC_BUTTON_H_ */

@@ -1,3 +1,6 @@
-Button.c:32:6:Button_ReadInput	16	static
-Button.c:61:6:Button_TimerInit	16	static
-Button.c:67:15:Button_GetButtonState	24	static
+Button.c:38:6:Button_ReadInput	16	static
+Button.c:71:6:Button_TimerInit	16	static
+Button.c:78:6:Button_Process	16	static
+Button.c:108:15:Button_GetButtonState	16	static
+Button.c:118:5:IsPressed	16	static
+Button.c:126:5:IsHeld	16	static
