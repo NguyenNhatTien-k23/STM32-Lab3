@@ -22,15 +22,6 @@ typedef enum FSMachineState{
 	FSM_MODIFY_GREEN
 } MachineState_t;
 
-//TLS_A_B where A and B is the led state of each set
-typedef enum TraficLightState{
-	TLS_INIT = 0,
-	TLS_GREEN_RED,
-	TLS_YELLOW_RED,
-	TLS_RED_GREEN,
-	TLS_RED_YELLOW
-}TraficLightState_t;
-
 void FiniteStateMachine_Run();
 
 

@@ -9,6 +9,10 @@
 
 #define NUMBER_OF_EN_PIN 4
 
+#define BUTTON_SELECT 0
+#define BUTTON_MODIFY 1
+#define BUTTON_SET 2
+
 /**
  * Private member function
  */
@@ -18,10 +22,11 @@ void FiniteStateMachine_Normal();
 void FiniteStateMachine_ModifyRed();
 void FiniteStateMachine_ModifyYellow();
 void FiniteStateMachine_ModifyGreen();
+void FiniteStateMachine_ToggleLight();
 
 void UpdateLEDBuffer();
-void DisplayTraficLight(TraficLightState_t state);
-void ClearTraficLight();
+void UpdateBaseCounter();
+void BalanceBaseCounter(int priority_light);
 
 /**
  * Private variable
@@ -34,14 +39,17 @@ TraficLightState_t trafic_light_state = TLS_INIT;
 int blinking_timer_id;
 int led_display_timer_id;
 int trafic_light_timer_id;
+int modify_restrict_timer_id;
 
 //Misc
 uint8_t en_pin = 0;
-uint8_t led_buffer[4];
+uint8_t led_buffer[4] = {0, 0, 0, 0};
 
 uint8_t base_counter_red = 5;
 uint8_t base_counter_yellow = 2;
 uint8_t base_counter_green = 3;
+
+uint8_t modifiable_base_counter;
 
 uint8_t counter_A;
 uint8_t counter_B;
@@ -57,12 +65,64 @@ void FiniteStateMachine_Run(){
 			SoftwareTimer_ResetFlag(trafic_light_timer_id);
 			FiniteStateMachine_Normal();
 		}
-		//Wait for button input to change
+
+		//Wait for button input to change state
+		if(Button_GetButtonState(BUTTON_SELECT) == PRESSED){
+			machine_state = FSM_MODIFY_RED;
+			modifiable_base_counter = base_counter_red;
+			led_buffer[0] = 0;
+			led_buffer[1] = 1;
+			led_buffer[2] = base_counter_red / 10;
+			led_buffer[3] = base_counter_red - led_buffer[2] * 10;
+			ClearTraficLight();
+		}
 		break;
 
 	case FSM_MODIFY_RED:
+		FiniteStateMachine_ModifyRed();
+		//Check if set_button is pressed
+		if(machine_state == FSM_INIT)
+			break;
+
+		if(Button_GetButtonState(BUTTON_SELECT) == PRESSED){
+			machine_state = FSM_MODIFY_YELLOW;
+			modifiable_base_counter = base_counter_yellow;
+			led_buffer[0] = 0;
+			led_buffer[1] = 2;
+			led_buffer[2] = base_counter_yellow / 10;
+			led_buffer[3] = base_counter_yellow - led_buffer[2] * 10;
+			ClearTraficLight();
+		}
+		break;
+
 	case FSM_MODIFY_YELLOW:
+		FiniteStateMachine_ModifyYellow();
+		//Check if set_button is pressed
+		if(machine_state == FSM_INIT)
+			break;
+
+		if(Button_GetButtonState(BUTTON_SELECT) == PRESSED){
+			machine_state = FSM_MODIFY_GREEN;
+			modifiable_base_counter = base_counter_green;
+			led_buffer[0] = 0;
+			led_buffer[1] = 3;
+			led_buffer[2] = base_counter_green / 10;
+			led_buffer[3] = base_counter_green - led_buffer[2] * 10;
+			ClearTraficLight();
+		}
+		break;
 	case FSM_MODIFY_GREEN:
+		FiniteStateMachine_ModifyGreen();
+		//Check if set_button is pressed
+		if(machine_state == FSM_INIT)
+			break;
+
+		if(Button_GetButtonState(BUTTON_SELECT) == PRESSED){
+			machine_state = FSM_NORMAL;
+			trafic_light_state = TLS_INIT;
+			ClearTraficLight();
+		}
+		break;
 
 	default:
 		break;
@@ -71,31 +131,33 @@ void FiniteStateMachine_Run(){
 	//LED Blinking for all state
 	if(SoftwareTimer_GetFlag(blinking_timer_id) == FLAG_ON){
 		SoftwareTimer_ResetFlag(blinking_timer_id);
-		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+		FiniteStateMachine_ToggleLight();
 	}
 
-	//LED Display for all state
-//	if(SoftwareTimer_GetFlag(led_display_timer_id) == FLAG_ON){
-//		SoftwareTimer_ResetFlag(blinking_timer_id);
-//		LEDdisplay_DisplayNumber(led_buffer[en_pin], en_pin++);
-//		if(en_pin >= NUMBER_OF_EN_PIN){
-//			en_pin = 0;
-//		}
-//	}
+	//7-Segments LED Display for all state
+	if(SoftwareTimer_GetFlag(led_display_timer_id) == FLAG_ON){
+		SoftwareTimer_ResetFlag(led_display_timer_id);
+		LEDdisplay_DisplayNumber(led_buffer[en_pin], en_pin);
+		++en_pin;
+		if(en_pin >= NUMBER_OF_EN_PIN){
+			en_pin = 0;
+		}
+
+	}
 }
 
 void FiniteStateMachine_Init(){
 	SoftwareTimer_Init();
 	Button_TimerInit();
 
-	blinking_timer_id = SoftwareTimer_AddNewTimer(1000);
-	led_display_timer_id = SoftwareTimer_AddNewTimer(250);
+	blinking_timer_id = SoftwareTimer_AddNewTimer(500);
+	led_display_timer_id = SoftwareTimer_AddNewTimer(125);
 	trafic_light_timer_id = SoftwareTimer_AddNewTimer(1000);
+	modify_restrict_timer_id = SoftwareTimer_AddNewTimer(250);
 
 	machine_state = FSM_NORMAL;
-	en_pin = 0;
-
 	trafic_light_state = TLS_INIT;
+	en_pin = 0;
 }
 
 void FiniteStateMachine_Normal(){
@@ -146,22 +208,36 @@ void FiniteStateMachine_Normal(){
 	default:
 		break;
 	}
-
+	UpdateLEDBuffer();
 	--counter_A;
 	--counter_B;
-	UpdateLEDBuffer();
 }
 
 void FiniteStateMachine_ModifyRed(){
-
+	UpdateBaseCounter();
+	if(Button_GetButtonState(BUTTON_SET) == PRESSED){
+		base_counter_red = modifiable_base_counter;
+		BalanceBaseCounter(LIGHT_RED);
+		machine_state = FSM_INIT;
+	}
 }
 
 void FiniteStateMachine_ModifyYellow(){
-
+	UpdateBaseCounter();
+	if(Button_GetButtonState(BUTTON_SET) == PRESSED){
+		base_counter_yellow = modifiable_base_counter;
+		BalanceBaseCounter(LIGHT_YELLOW);
+		machine_state = FSM_INIT;
+	}
 }
 
 void FiniteStateMachine_ModifyGreen(){
-
+	UpdateBaseCounter();
+	if(Button_GetButtonState(BUTTON_SET) == PRESSED){
+		base_counter_green = modifiable_base_counter;
+		BalanceBaseCounter(LIGHT_GREEN);
+		machine_state = FSM_INIT;
+	}
 }
 
 
@@ -172,27 +248,19 @@ void UpdateLEDBuffer(){
 	led_buffer[3] = counter_B - led_buffer[2] * 10;
 }
 
-void DisplayTraficLight(TraficLightState_t state){
-	ClearTraficLight();
-	switch(state){
-	case TLS_GREEN_RED:
-		HAL_GPIO_WritePin(GPIOB, GREEN_A_Pin, RESET);
-		HAL_GPIO_WritePin(GPIOB, RED_B_Pin, RESET);
+void FiniteStateMachine_ToggleLight(){
+	HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+	switch(machine_state){
+	case FSM_MODIFY_RED:
+		LEDdisplay_ToggleLight(LIGHT_RED);
 		break;
 
-	case TLS_YELLOW_RED:
-		HAL_GPIO_WritePin(GPIOB, YELLOW_A_Pin, RESET);
-		HAL_GPIO_WritePin(GPIOB, RED_B_Pin, RESET);
+	case FSM_MODIFY_YELLOW:
+		LEDdisplay_ToggleLight(LIGHT_YELLOW);
 		break;
 
-	case TLS_RED_GREEN:
-		HAL_GPIO_WritePin(GPIOB, RED_A_Pin, RESET);
-		HAL_GPIO_WritePin(GPIOB, GREEN_B_Pin, RESET);
-		break;
-
-	case TLS_RED_YELLOW:
-		HAL_GPIO_WritePin(GPIOB, RED_A_Pin, RESET);
-		HAL_GPIO_WritePin(GPIOB, YELLOW_B_Pin, RESET);
+	case FSM_MODIFY_GREEN:
+		LEDdisplay_ToggleLight(LIGHT_GREEN);
 		break;
 
 	default:
@@ -200,8 +268,53 @@ void DisplayTraficLight(TraficLightState_t state){
 	}
 }
 
-void ClearTraficLight(){
-	for(int i = 0; i < 6; ++i){
-		HAL_GPIO_WritePin(GPIOB, RED_A_Pin << i, SET);
+/**
+ * This function is used for all modify states
+ * The only different thing between state is modifiable_base_counter is set to the next state when the state is switched
+ * The handling when set_button is pressed is in its respective state
+ */
+void UpdateBaseCounter(){
+	switch(Button_GetButtonState(BUTTON_MODIFY)){
+	case PRESSED:
+		modifiable_base_counter++;
+		if(modifiable_base_counter > 99){
+			modifiable_base_counter = 0;
+		}
+		break;
+
+	case HOLD:
+		if(SoftwareTimer_GetFlag(modify_restrict_timer_id) == FLAG_ON){
+			SoftwareTimer_ResetFlag(modify_restrict_timer_id);
+			modifiable_base_counter++;
+			if(modifiable_base_counter > 99){
+				modifiable_base_counter = 0;
+			}
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	led_buffer[2] = modifiable_base_counter / 10;
+	led_buffer[3] = modifiable_base_counter - led_buffer[2] * 10;
+}
+
+void BalanceBaseCounter(int priority_light){
+	switch(priority_light){
+	case LIGHT_RED:
+		base_counter_green = base_counter_red - base_counter_yellow;
+		break;
+
+	case LIGHT_YELLOW:
+		base_counter_red = base_counter_green + base_counter_yellow;
+		break;
+
+	case LIGHT_GREEN:
+		base_counter_red = base_counter_green + base_counter_yellow;
+		break;
+
+	default:
+		break;
 	}
 }
