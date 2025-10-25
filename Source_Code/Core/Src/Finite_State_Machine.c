@@ -54,6 +54,8 @@ uint8_t modifiable_base_counter;
 uint8_t counter_A;
 uint8_t counter_B;
 
+int first_init = 1;
+
 void FiniteStateMachine_Run(){
 	switch(machine_state){
 	case FSM_INIT:
@@ -147,13 +149,17 @@ void FiniteStateMachine_Run(){
 }
 
 void FiniteStateMachine_Init(){
-	SoftwareTimer_Init();
-	Button_TimerInit();
+	if(first_init == 1){
+		SoftwareTimer_Init();
+		Button_TimerInit();
+		first_init = 0;
 
-	blinking_timer_id = SoftwareTimer_AddNewTimer(250);
-	led_display_timer_id = SoftwareTimer_AddNewTimer(125);
-	trafic_light_timer_id = SoftwareTimer_AddNewTimer(1000);
-	modify_restrict_timer_id = SoftwareTimer_AddNewTimer(250);
+		blinking_timer_id = SoftwareTimer_AddNewTimer(250);
+		led_display_timer_id = SoftwareTimer_AddNewTimer(125);
+		trafic_light_timer_id = SoftwareTimer_AddNewTimer(1000);
+		modify_restrict_timer_id = SoftwareTimer_AddNewTimer(250);
+	}
+
 
 	machine_state = FSM_NORMAL;
 	trafic_light_state = TLS_INIT;
