@@ -7,4 +7,4 @@ Finite_State_Machine.c:270:6:FiniteStateMachine_ModifyGreen	8	static
 Finite_State_Machine.c:280:6:UpdateLEDBuffer	4	static
 Finite_State_Machine.c:287:6:FiniteStateMachine_ToggleLight	8	static
 Finite_State_Machine.c:312:6:UpdateBaseCounter	8	static
-Finite_State_Machine.c:339:6:BalanceBaseCounter	16	static
+Finite_State_Machine.c:329:6:BalanceBaseCounter	16	static

@@ -73,7 +73,7 @@ void FiniteStateMachine_Run(){
 			machine_state = FSM_MODIFY_RED;
 			modifiable_base_counter = base_counter_red;
 			led_buffer[0] = 0;
-			led_buffer[1] = 1;
+			led_buffer[1] = 2;
 			led_buffer[2] = base_counter_red / 10;
 			led_buffer[3] = base_counter_red - led_buffer[2] * 10;
 			ClearTraficLight();
@@ -90,7 +90,7 @@ void FiniteStateMachine_Run(){
 			machine_state = FSM_MODIFY_YELLOW;
 			modifiable_base_counter = base_counter_yellow;
 			led_buffer[0] = 0;
-			led_buffer[1] = 2;
+			led_buffer[1] = 3;
 			led_buffer[2] = base_counter_yellow / 10;
 			led_buffer[3] = base_counter_yellow - led_buffer[2] * 10;
 			ClearTraficLight();
@@ -107,7 +107,7 @@ void FiniteStateMachine_Run(){
 			machine_state = FSM_MODIFY_GREEN;
 			modifiable_base_counter = base_counter_green;
 			led_buffer[0] = 0;
-			led_buffer[1] = 3;
+			led_buffer[1] = 4;
 			led_buffer[2] = base_counter_green / 10;
 			led_buffer[3] = base_counter_green - led_buffer[2] * 10;
 			ClearTraficLight();
@@ -315,16 +315,6 @@ void UpdateBaseCounter(){
 		modifiable_base_counter++;
 		if(modifiable_base_counter > 99){
 			modifiable_base_counter = 1;
-		}
-		break;
-
-	case HOLD:
-		if(SoftwareTimer_GetFlag(modify_restrict_timer_id) == FLAG_ON){
-			SoftwareTimer_ResetFlag(modify_restrict_timer_id);
-			modifiable_base_counter++;
-			if(modifiable_base_counter > 99){
-				modifiable_base_counter = 1;
-			}
 		}
 		break;
 

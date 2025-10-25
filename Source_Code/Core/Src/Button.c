@@ -40,9 +40,9 @@ void Button_ReadInput(){
 		previous_state[button] = current_state[button];
 		current_state[button] = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0 << button);
 
-		//Button state is difference
+		//Button state is the same -> Acctual Input
 		if(previous_state[button] == current_state[button]){
-			//Switch state
+			//If switch state happen
 			if(current_state[button] != button_state[button]){
 				button_state[button] = current_state[button];
 				//Switch to pressed state
