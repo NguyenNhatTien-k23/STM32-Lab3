@@ -1,10 +1,10 @@
 Finite_State_Machine.c:59:6:FiniteStateMachine_Run	8	static
 Finite_State_Machine.c:151:6:FiniteStateMachine_Init	8	static
 Finite_State_Machine.c:176:6:FiniteStateMachine_Normal	8	static
-Finite_State_Machine.c:229:6:FiniteStateMachine_ModifyRed	8	static
-Finite_State_Machine.c:238:6:FiniteStateMachine_ModifyYellow	8	static
-Finite_State_Machine.c:247:6:FiniteStateMachine_ModifyGreen	8	static
-Finite_State_Machine.c:257:6:UpdateLEDBuffer	4	static
-Finite_State_Machine.c:264:6:FiniteStateMachine_ToggleLight	8	static
-Finite_State_Machine.c:289:6:UpdateBaseCounter	8	static
-Finite_State_Machine.c:316:6:BalanceBaseCounter	16	static
+Finite_State_Machine.c:252:6:FiniteStateMachine_ModifyRed	8	static
+Finite_State_Machine.c:261:6:FiniteStateMachine_ModifyYellow	8	static
+Finite_State_Machine.c:270:6:FiniteStateMachine_ModifyGreen	8	static
+Finite_State_Machine.c:280:6:UpdateLEDBuffer	4	static
+Finite_State_Machine.c:287:6:FiniteStateMachine_ToggleLight	8	static
+Finite_State_Machine.c:312:6:UpdateBaseCounter	8	static
+Finite_State_Machine.c:339:6:BalanceBaseCounter	16	static

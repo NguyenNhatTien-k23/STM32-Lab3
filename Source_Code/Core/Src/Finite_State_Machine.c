@@ -45,9 +45,9 @@ int modify_restrict_timer_id;
 uint8_t en_pin = 0;
 uint8_t led_buffer[4] = {0, 0, 0, 0};
 
-uint8_t base_counter_red = 5;
+uint8_t base_counter_red = 99;
 uint8_t base_counter_yellow = 2;
-uint8_t base_counter_green = 3;
+uint8_t base_counter_green = 97;
 
 uint8_t modifiable_base_counter;
 
@@ -177,10 +177,18 @@ void FiniteStateMachine_Normal(){
 	switch(trafic_light_state){
 	case TLS_INIT:
 		if(1){
-			trafic_light_state = TLS_GREEN_RED;
 			counter_A = base_counter_green;
 			counter_B = base_counter_red;
-			DisplayTraficLight(TLS_GREEN_RED);
+			trafic_light_state = TLS_GREEN_RED;
+			if(counter_A <= 0){
+				counter_A = base_counter_yellow;
+				trafic_light_state = TLS_YELLOW_RED;
+				DisplayTraficLight(TLS_YELLOW_RED);
+			}
+			else{
+				trafic_light_state = TLS_GREEN_RED;
+				DisplayTraficLight(TLS_GREEN_RED);
+			}
 		}
 		break;
 
@@ -193,11 +201,18 @@ void FiniteStateMachine_Normal(){
 		break;
 
 	case TLS_YELLOW_RED:
-		if(counter_A <= 0 && counter_B <= 0){
-			trafic_light_state = TLS_RED_GREEN;
+		if(counter_A <= 0 || counter_B <= 0){
 			counter_A = base_counter_red;
 			counter_B = base_counter_green;
-			DisplayTraficLight(TLS_RED_GREEN);
+			if(counter_B <= 0){
+				counter_B = base_counter_yellow;
+				trafic_light_state = TLS_RED_YELLOW;
+				DisplayTraficLight(TLS_RED_YELLOW);
+			}
+			else{
+				trafic_light_state = TLS_RED_GREEN;
+				DisplayTraficLight(TLS_RED_GREEN);
+			}
 		}
 		break;
 
@@ -210,11 +225,19 @@ void FiniteStateMachine_Normal(){
 		break;
 
 	case TLS_RED_YELLOW:
-		if(counter_A <= 0 && counter_B <= 0){
-			trafic_light_state = TLS_GREEN_RED;
+		if(counter_A == 0 || counter_B == 0){
 			counter_A = base_counter_green;
 			counter_B = base_counter_red;
-			DisplayTraficLight(TLS_GREEN_RED);
+
+			if(counter_A <= 0){
+				counter_A = base_counter_yellow;
+				trafic_light_state = TLS_YELLOW_RED;
+				DisplayTraficLight(TLS_YELLOW_RED);
+			}
+			else{
+				trafic_light_state = TLS_GREEN_RED;
+				DisplayTraficLight(TLS_GREEN_RED);
+			}
 		}
 		break;
 
@@ -291,7 +314,7 @@ void UpdateBaseCounter(){
 	case PRESSED:
 		modifiable_base_counter++;
 		if(modifiable_base_counter > 99){
-			modifiable_base_counter = 0;
+			modifiable_base_counter = 1;
 		}
 		break;
 
@@ -300,7 +323,7 @@ void UpdateBaseCounter(){
 			SoftwareTimer_ResetFlag(modify_restrict_timer_id);
 			modifiable_base_counter++;
 			if(modifiable_base_counter > 99){
-				modifiable_base_counter = 0;
+				modifiable_base_counter = 1;
 			}
 		}
 		break;
@@ -317,14 +340,44 @@ void BalanceBaseCounter(int priority_light){
 	switch(priority_light){
 	case LIGHT_RED:
 		base_counter_green = base_counter_red - base_counter_yellow;
+		//Balance underflow
+		//if red > 0 -> yellow = 1 green = red - yellow
+		//base_counter_green is unsigned so underflow would just throw it to 2^8 - 1 - red - yellow
+		//That limit will always larger that 99
+		if(base_counter_green > 99){
+			base_counter_yellow = 1;
+			base_counter_green = base_counter_red - base_counter_yellow;
+		}
 		break;
 
 	case LIGHT_YELLOW:
 		base_counter_red = base_counter_green + base_counter_yellow;
+		//Red overflow
+		//If yellow == 99 -> green = 0 else red = 99 -> green = red - yellow
+		if(base_counter_red > 99){
+			if(base_counter_yellow == 99){
+				base_counter_green = 0;
+				base_counter_red = 99;
+			}
+			else{
+				base_counter_red = 99;
+				base_counter_green = base_counter_red - base_counter_yellow;
+			}
+		}
 		break;
 
 	case LIGHT_GREEN:
 		base_counter_red = base_counter_green + base_counter_yellow;
+		if(base_counter_red > 99){
+			if(base_counter_green == 99){
+				base_counter_yellow = 0;
+				base_counter_red = 99;
+			}
+			else{
+				base_counter_red = 99;
+				base_counter_yellow = base_counter_red - base_counter_green;
+			}
+		}
 		break;
 
 	default:
