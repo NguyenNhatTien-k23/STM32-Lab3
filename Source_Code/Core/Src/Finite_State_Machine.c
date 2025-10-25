@@ -45,9 +45,9 @@ int modify_restrict_timer_id;
 uint8_t en_pin = 0;
 uint8_t led_buffer[4] = {0, 0, 0, 0};
 
-uint8_t base_counter_red = 99;
+uint8_t base_counter_red = 5;
 uint8_t base_counter_yellow = 2;
-uint8_t base_counter_green = 97;
+uint8_t base_counter_green = 3;
 
 uint8_t modifiable_base_counter;
 
